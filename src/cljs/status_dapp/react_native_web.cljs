@@ -18,6 +18,8 @@
 (def touchable-highlight (get-class "TouchableOpacity"))
 (def scroll-view (get-class "ScrollView"))
 (def text-input (get-class "TextInput"))
+(def activity-indicator (get-class "ActivityIndicator"))
+
 
 (defn text
   ([t]

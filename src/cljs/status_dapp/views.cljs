@@ -16,10 +16,33 @@
                                          :value    0
                                          :gasPrise 150000}]))
 
+(defview contract-panel [accounts]
+  (letsubs [{:keys [tx-hash mining? address value]} [:get :contract]]
+    (cond
+
+      address
+      [react/view
+       [ui/label "Contract deployed at: " ""]
+       [react/text address]
+       [ui/button "Call contract get function" #(re-frame/dispatch [:contract-call-get])]
+       (when value
+         [react/text value])
+       [ui/button "Call contract set function" #(re-frame/dispatch [:contract-call-set])]]
+
+      tx-hash
+      [react/view {:style {:padding-top 10}}
+       [react/activity-indicator {:animating true}]
+       [react/text {:selectable true} (str "Mining new contract in tx: " tx-hash)]]
+
+      :else
+      [ui/button "Deploy simple contract" #(re-frame/dispatch [:deploy-contract (str (first accounts))])])))
+
+
 (defview web3-view []
   (letsubs [{:keys [api node network ethereum whisper accounts syncing gas-price
                     default-account default-block]}
-            [:get :web3-async-data]]
+            [:get :web3-async-data]
+            balances [:get :balances]]
     [react/scroll-view {:style {:flex 1}}
      [react/view {:style {:flex 1 :padding 10}}
       [react/view {:style {:flex-direction :row}}
@@ -27,6 +50,7 @@
        ;[react/view {:style {:width 5}}]
        (when (= "3" network)
          [ui/button "Request 1000 STT" #(send-transaction (str (first accounts)))])]
+      [contract-panel accounts]
       [react/text {:style {:font-weight :bold :margin-top 20}} "Version"]
       [ui/label "api" api]
       [ui/label "node" node]
@@ -37,7 +61,12 @@
       [ui/label "defaultAccount" default-account]
       [ui/label "accounts" ""]
       (for [account accounts]
-        [react/text account])
+        ^{:key account}
+        [react/view
+         [react/text account]
+         (if (get balances account)
+           [react/text (str "Balance: " (get balances account) " wei")]
+           [ui/button "Get balance" #(re-frame/dispatch [:get-balance account])])])
       [react/text {:style {:font-weight :bold :margin-top 20}} "Eth"]
       [ui/label "defaultBlock" default-block]
       (if syncing
