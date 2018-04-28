@@ -1,7 +1,8 @@
 (ns status-dapp.events
   (:require [re-frame.core :as re-frame]
             [status-dapp.db :as db]
-            [day8.re-frame.http-fx]))
+            [day8.re-frame.http-fx]
+            [ajax.core :as ajax]))
 
 (defn set-web3-value [key]
   (fn [error result]
@@ -68,19 +69,27 @@
 
 (re-frame/reg-fx
   :call-set-contract-fx
-  (fn [[web3 address accounts]]
-    (set! (.-defaultAccount (.-eth web3)) (first accounts))
+  (fn [[web3 address]]
     (let [contract (.at (.contract (.-eth web3) abi) address)]
       (.set contract 10 #(println "Callback set contract" %1 %2)))))
 
 (re-frame/reg-fx
   :call-get-contract-fx
-  (fn [[web3 address accounts]]
-    (set! (.-defaultAccount (.-eth web3)) (first accounts))
+  (fn [[web3 address]]
     (let [contract (.at (.contract (.-eth web3) abi) address)]
       (.get contract #(do
                         (println "Callback get contract" (js/JSON.stringify %2))
                         (re-frame/dispatch [:set-in [:contract :value] (str (js->clj %2))]))))))
+
+(re-frame/reg-fx
+  :sign-message-fx
+  (fn [[web3 account]]
+    (.sendAsync
+      (.-currentProvider web3)
+      (clj->js {:method "personal_sign"
+                :params [(.toHex web3 "Kudos to Andrey!") account]
+                :from   account})
+      #(println "Sign message CB " %1 %2))))
 
 (re-frame/reg-event-db
   :set
@@ -135,15 +144,15 @@
 
 (re-frame/reg-event-fx
   :contract-call-set
-  (fn [{{:keys [web3 contract web3-async-data]} :db} _]
+  (fn [{{:keys [web3 contract]} :db} _]
     (when (and web3 contract)
-      {:call-set-contract-fx [web3 (:address contract) (:accounts web3-async-data)]})))
+      {:call-set-contract-fx [web3 (:address contract)]})))
 
 (re-frame/reg-event-fx
   :contract-call-get
-  (fn [{{:keys [web3 contract web3-async-data]} :db} _]
+  (fn [{{:keys [web3 contract]} :db} _]
     (when (and web3 contract)
-      {:call-get-contract-fx [web3 (:address contract) (:accounts web3-async-data)]})))
+      {:call-get-contract-fx [web3 (:address contract)]})))
 
 (re-frame/reg-event-fx
   :good-request-ropsten-eth
@@ -158,11 +167,11 @@
 (re-frame/reg-event-fx
   :request-ropsten-eth
   (fn [_ [_ address]]
-    (js/alert "Requested")
-    {:http-xhrio {:method     :get
-                  :uri        (str "http://51.15.45.169:3001/donate/" address)
-                  :on-success [:good-request-ropsten-eth]
-                  :on-failure [:bad-request-ropsten-eth]}}))
+    {:http-xhrio {:method          :get
+                  :uri             (str "http://51.15.45.169:3001/donate/" address)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:good-request-ropsten-eth]
+                  :on-failure      [:bad-request-ropsten-eth]}}))
 
 ;;TODO Should be fixed on go side soon
 (re-frame/reg-event-fx
@@ -186,3 +195,8 @@
     (waiting-for-mining web3 tx-hash)
     {:db (assoc db :contract {:tx-hash tx-hash
                               :mining? true})}))
+
+(re-frame/reg-event-fx
+  :sign-message
+  (fn [{{:keys [web3 web3-async-data]} :db} _]
+    {:sign-message-fx [web3 (first (:accounts web3-async-data))]}))
