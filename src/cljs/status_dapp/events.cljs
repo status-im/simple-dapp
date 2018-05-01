@@ -69,9 +69,9 @@
 
 (re-frame/reg-fx
   :call-set-contract-fx
-  (fn [[web3 address]]
+  (fn [[web3 address value]]
     (let [contract (.at (.contract (.-eth web3) abi) address)]
-      (.set contract 10 #(println "Callback set contract" %1 %2)))))
+      (.set contract value #(println "Callback set contract" value %1 %2)))))
 
 (re-frame/reg-fx
   :call-get-contract-fx
@@ -144,9 +144,9 @@
 
 (re-frame/reg-event-fx
   :contract-call-set
-  (fn [{{:keys [web3 contract]} :db} _]
+  (fn [{{:keys [web3 contract]} :db} [_ value]]
     (when (and web3 contract)
-      {:call-set-contract-fx [web3 (:address contract)]})))
+      {:call-set-contract-fx [web3 (:address contract) value]})))
 
 (re-frame/reg-event-fx
   :contract-call-get

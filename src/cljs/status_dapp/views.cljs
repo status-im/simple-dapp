@@ -21,10 +21,19 @@
        [react/view
         [ui/label "Contract deployed at: " ""]
         [react/text address]
+
         [ui/button "Call contract get function" #(re-frame/dispatch [:contract-call-get])]
+        [react/text "Default value: 0"]
         (when value
           [react/text value])
-        [ui/button "Call contract set function" #(re-frame/dispatch [:contract-call-set])]]
+
+        [ui/button "Call contract set function" #(re-frame/dispatch [:contract-call-set 1])]
+        [react/text "Sets value to 1"]
+
+        [ui/button "Call function 2 times in a row" #(do
+                                                       (re-frame/dispatch [:contract-call-set 10])
+                                                       (re-frame/dispatch [:contract-call-set 20]))]
+        [react/text "First tx sets value to 10, second to 20"]]
 
        tx-hash
        [react/view {:style {:padding-top 10}}
