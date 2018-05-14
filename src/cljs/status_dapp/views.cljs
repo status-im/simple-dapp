@@ -47,6 +47,7 @@
   (letsubs [{:keys [api node network ethereum whisper accounts syncing gas-price
                     default-account coinbase default-block]}
             [:get :web3-async-data]
+            web3 [:get :web3]
             tab-view [:get :tab-view]
             balances [:get :balances]]
     [react/view {:style {:flex 1}}
@@ -114,8 +115,16 @@
 
        (when (= :about tab-view)
          [react/view
+          [react/view {:style {:flex-direction :row :padding-vertical 10}}
+           [react/text "web3 provider: "]
+           (cond (.-currentProvider.isStatus web3)
+                 [react/text "Status"]
+                 (.-currentProvider.isMetaMask web3)
+                 [react/text "MetaMask"]
+                 :else [react/text "Unknown"])]
+
           [react/text "Simple DApp"]
-          [react/text "Sources: https://github.com/status-im/status-dapp"]])]]]))
+          [react/text {:selectable true} "Sources: https://github.com/status-im/status-dapp"]])]]]))
 
 (defview main []
   (letsubs [view-id [:get :view-id]]
