@@ -63,7 +63,6 @@
           (if (= "3" network)
             [react/view
              [ui/asset-button "STT" constants/stt-ropsten-contract]
-             [ui/asset-button "ATT" constants/att-ropsten-contract]
              [ui/asset-button "HND" constants/hnd-ropsten-contract]
              [ui/asset-button "LXS" constants/lxs-ropsten-contract]
              [ui/asset-button "ADI" constants/adi-ropsten-contract]
