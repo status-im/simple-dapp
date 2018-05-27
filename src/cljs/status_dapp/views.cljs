@@ -45,7 +45,7 @@
 
 (defview web3-view []
   (letsubs [{:keys [api node network ethereum whisper accounts syncing gas-price
-                    default-account coinbase default-block]}
+                    default-account coinbase coinbase-async default-block]}
             [:get :web3-async-data]
             web3 [:get :web3]
             tab-view [:get :tab-view]
@@ -89,6 +89,8 @@
           [react/text default-account]
           [ui/label "coinbase" ""]
           [react/text coinbase]
+          [ui/label "coinbase async" ""]
+          [react/text coinbase-async]
           [ui/label "accounts" ""]
           (for [account accounts]
             ^{:key account}

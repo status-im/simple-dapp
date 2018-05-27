@@ -14,9 +14,9 @@
     (.getNode (.-version web3) (set-web3-value :node))))
 
 (re-frame/reg-fx
-  :web3-network-fx
+  :web3-coinbase-fx
   (fn [web3]
-    (.getNetwork (.-version web3) (set-web3-value :network))))
+    (.getCoinbase (.-eth web3) (set-web3-value :coinbase-async))))
 
 (re-frame/reg-fx
   :web3-ethereum-fx
@@ -117,7 +117,7 @@
                                   :coinbase (.-coinbase (.-eth web3))
                                   :default-block (.-defaultBlock (.-eth web3)))
        :web3-node-fx      web3
-       ;:web3-network-fx   web3
+       :web3-coinbase-fx   web3
        :web3-ethereum-fx  web3
        :web3-whisper-fx   web3
        ;:web3-accounts-fx  web3
