@@ -11,6 +11,7 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
   :source-paths ["src/cljs"]
+  :figwheel {:server-port 3450}
   :profiles
   {:dev
    {:dependencies [[re-frisk "0.5.3"]]

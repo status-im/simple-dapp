@@ -19,5 +19,6 @@
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
   (re-frame/dispatch [:request-web3-async-data])
+  (re-frame/dispatch [:check-filters])
   (dev-setup)
   (mount-root))

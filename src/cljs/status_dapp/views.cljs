@@ -11,10 +11,22 @@
     "Can't find web3 library"]])
 
 (defview contract-panel [accounts]
-  (letsubs [{:keys [tx-hash address value]} [:get :contract]]
+  (letsubs [message [:get :message]
+            {:keys [result]} [:get :signed-message]
+            {:keys [tx-hash address value]} [:get :contract]]
     [react/view
-     [react/view {:style {:margin-bottom 10}}
+     [react/view {:style {:margin-bottom 10 :flex-direction :row :align-items :center}}
+      [react/text-input {:style {:font-size 15 :border-width 1 :border-color "#4360df33"}
+                         :default-value message
+                         :on-change   (fn [e]
+                                        (let [native-event (.-nativeEvent e)
+                                              text (.-text native-event)]
+                                          (re-frame/dispatch [:set :message text])))}]
       [ui/button "Sign message" #(re-frame/dispatch [:sign-message])]]
+     (when result
+       [react/view {:style {:margin-bottom 10}}
+        [ui/label "Signed message: " ""]
+        [react/text {:style {:flex 1}} (str result)]])
      (cond
 
        address

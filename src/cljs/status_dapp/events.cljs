@@ -80,13 +80,14 @@
 
 (re-frame/reg-fx
   :sign-message-fx
-  (fn [[web3 account]]
+  (fn [[web3 account message]]
     (.sendAsync
       (.-currentProvider web3)
       (clj->js {:method "personal_sign"
-                :params [(.toHex web3 "Kudos to Andrey!") account]
+                :params [(.toHex web3 message) account]
                 :from   account})
-      #(println "Sign message CB " %1 %2))))
+      #(do (println "Sign message CB " %1 %2)
+           (re-frame/dispatch [:set :signed-message (js->clj %2 :keywordize-keys true)])))))
 
 (re-frame/reg-event-db
   :set
@@ -123,6 +124,15 @@
        ;:web3-accounts-fx  web3
        :web3-syncyng-fx   web3
        :web3-gas-price-fx web3})))
+
+(re-frame/reg-event-fx
+ :check-filters
+ (fn [{{:keys [web3] :as db} :db} _]
+   (when web3
+     (let [filter (.filter (.-eth web3) "latest")
+           _ (.watch filter #())
+           _ (js/setTimeout #(.stopWatching filter) 5000)]
+       nil))))
 
 (re-frame/reg-event-fx
   :send-transaction
@@ -183,5 +193,5 @@
 
 (re-frame/reg-event-fx
   :sign-message
-  (fn [{{:keys [web3 web3-async-data]} :db} _]
-    {:sign-message-fx [web3 (first (:accounts web3-async-data))]}))
+  (fn [{{:keys [web3 web3-async-data message]} :db} _]
+    {:sign-message-fx [web3 (first (:accounts web3-async-data)) message]}))
