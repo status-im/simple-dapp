@@ -53,7 +53,9 @@
         [react/text {:selectable true} (str "Mining new contract in tx: " tx-hash)]]
 
        :else
-       [ui/button "Deploy simple contract" #(re-frame/dispatch [:deploy-contract (str (first accounts))])])]))
+       [ui/button "Deploy simple contract" #(re-frame/dispatch [:deploy-contract (str (first accounts))])])
+     [react/view {:style {:margin-top 30}}
+      [ui/button "Test filters" #(re-frame/dispatch [:check-filters])]]]))
 
 (defview web3-view []
   (letsubs [{:keys [api node network ethereum whisper accounts syncing gas-price
