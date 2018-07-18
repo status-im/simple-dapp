@@ -6,6 +6,11 @@
             [status-dapp.views :as views]
             [status-dapp.config :as config]))
 
+(js/window.addEventListener "message"
+                            #(when (and % (.-data %) (= (.-type (.-data %)) "STATUS_API_SUCCESS"))
+                               (println "message" (.-data %))
+                               (re-frame/dispatch [:on-message (js->clj (.-data %) :keywordize-keys true)])))
+
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)

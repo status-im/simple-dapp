@@ -178,7 +178,7 @@
   :request-ropsten-eth
   (fn [_ [_ address]]
     {:http-xhrio {:method          :get
-                  :uri             (str "http://51.15.45.169:3001/donate/" address)
+                  :uri             (str "https://faucet.status.im/donate/" address)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [:good-request-ropsten-eth]
                   :on-failure      [:bad-request-ropsten-eth]}}))
@@ -195,3 +195,10 @@
   :sign-message
   (fn [{{:keys [web3 web3-async-data message]} :db} _]
     {:sign-message-fx [web3 (first (:accounts web3-async-data)) message]}))
+
+(re-frame/reg-event-fx
+ :on-message
+ (fn [{db :db} [_ data]]
+   (println "ON MESSAGE DATA" data)
+   (println "ON MESSAGE STATUS API" js/STATUS_API)
+   {:db (assoc-in db [:api :contact] (aget js/STATUS_API "CONTACT_CODE"))}))

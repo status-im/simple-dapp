@@ -16,12 +16,12 @@
             {:keys [tx-hash address value]} [:get :contract]]
     [react/view
      [react/view {:style {:margin-bottom 10 :flex-direction :row :align-items :center}}
-      [react/text-input {:style {:font-size 15 :border-width 1 :border-color "#4360df33"}
+      [react/text-input {:style         {:font-size 15 :border-width 1 :border-color "#4360df33"}
                          :default-value message
-                         :on-change   (fn [e]
-                                        (let [native-event (.-nativeEvent e)
-                                              text (.-text native-event)]
-                                          (re-frame/dispatch [:set :message text])))}]
+                         :on-change     (fn [e]
+                                          (let [native-event (.-nativeEvent e)
+                                                text         (.-text native-event)]
+                                            (re-frame/dispatch [:set :message text])))}]
       [ui/button "Sign message" #(re-frame/dispatch [:sign-message])]]
      (when result
        [react/view {:style {:margin-bottom 10}}
@@ -61,9 +61,10 @@
   (letsubs [{:keys [api node network ethereum whisper accounts syncing gas-price
                     default-account coinbase coinbase-async default-block]}
             [:get :web3-async-data]
-            web3 [:get :web3]
-            tab-view [:get :tab-view]
-            balances [:get :balances]]
+            status-api [:get :api]
+            web3       [:get :web3]
+            tab-view   [:get :tab-view]
+            balances   [:get :balances]]
     [react/view {:style {:flex 1}}
      [ui/tab-buttons tab-view]
      [react/scroll-view {:style {:flex 1}}
@@ -71,11 +72,10 @@
 
        (when (= :assets tab-view)
          [react/view
-          ;;TODO CORS
-          ;;[ui/button "Request Ropsten ETH" #(re-frame/dispatch [:request-ropsten-eth (str (first accounts))])]
-          ;;[react/view {:style {:width 5}}]
           (if (= "3" network)
             [react/view
+             ;;TODO CORS
+             [ui/button "Request Ropsten ETH" #(re-frame/dispatch [:request-ropsten-eth (str (first accounts))])]
              [ui/asset-button "STT" constants/stt-ropsten-contract]
              [ui/asset-button "HND" constants/hnd-ropsten-contract]
              [ui/asset-button "LXS" constants/lxs-ropsten-contract]
@@ -127,6 +127,16 @@
             [ui/label "isSyncing" "false"])
           (when gas-price
             [ui/label "gasPrice" (str (.toString gas-price 10) " wei")])])
+
+       (when (= :api tab-view)
+         [react/view
+          [ui/button "Request contact code (public key)"
+           #(js/window.postMessage
+             (clj->js {:type "STATUS_API_REQUEST" :permissions ["CONTACT_CODE" "CONTACTS"]})
+             "*")]
+          [react/view {:style {:margin-bottom 10}}
+           [ui/label "Contact code: " ""]
+           [react/text (:contact status-api)]]])
 
        (when (= :about tab-view)
          [react/view
