@@ -165,12 +165,12 @@
       {:call-get-contract-fx [web3 (:address contract)]})))
 
 (re-frame/reg-event-fx
-  :good-request-ropsten-eth
+  :good-request-testnet-eth
   (fn [_ _]
     (js/alert "Faucet request recieved")))
 
 (re-frame/reg-event-fx
-  :bad-request-ropsten-eth
+  :bad-request-testnet-eth
   (fn [_ _]
     (js/alert "Faucet request error")))
 
@@ -180,8 +180,17 @@
     {:http-xhrio {:method          :get
                   :uri             (str "https://faucet.status.im/donate/" address)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success      [:good-request-ropsten-eth]
-                  :on-failure      [:bad-request-ropsten-eth]}}))
+                  :on-success      [:good-request-testnet-eth]
+                  :on-failure      [:bad-request-testnet-eth]}}))
+
+(re-frame/reg-event-fx
+  :request-rinkeby-eth
+  (fn [_ [_ address]]
+    {:http-xhrio {:method          :get
+                  :uri             (str "http://51.15.60.23:3001/donate/" address)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:good-request-testnet-eth]
+                  :on-failure      [:bad-request-testnet-eth]}}))
 
 (re-frame/reg-event-fx
  :new-contact-callback
