@@ -72,8 +72,8 @@
 
        (when (= :assets tab-view)
          [react/view
-          (if (= "3" network)
-            [react/view
+          (case  network
+            "3" [react/view
              ;;TODO CORS
              [ui/button "Request Ropsten ETH" #(re-frame/dispatch [:request-ropsten-eth (str (first accounts))])]
              [ui/asset-button "STT" constants/stt-ropsten-contract]
@@ -82,6 +82,8 @@
              [ui/asset-button "ADI" constants/adi-ropsten-contract]
              [ui/asset-button "WGN" constants/wgn-ropsten-contract]
              [ui/asset-button "MDS" constants/mds-ropsten-contract]]
+            "4" [react/view
+             [ui/button "Request Rinkeby ETH" #(re-frame/dispatch [:request-rinkeby-eth (str (first accounts))])]]
             [react/text "Assets supported only in Ropsten Testnet"])])
 
        (when (= :transactions tab-view)
