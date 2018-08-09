@@ -187,7 +187,7 @@
   :request-rinkeby-eth
   (fn [_ [_ address]]
     {:http-xhrio {:method          :get
-                  :uri             (str "http://51.15.60.23:3001/donate/" address)
+                  :uri             (str "https://faucet-rinkeby.status.im/donate/" address)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [:good-request-testnet-eth]
                   :on-failure      [:bad-request-testnet-eth]}}))
