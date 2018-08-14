@@ -34,4 +34,4 @@
   [react/view {:style {:margin-bottom 10}}
    [button (str "Request " label) #(re-frame/dispatch [:send-transaction {:to       asset-address
                                                                           :value    0
-                                                                          :gasPrise 150000}])]])
+                                                                          :gasPrice 150000}])]])
