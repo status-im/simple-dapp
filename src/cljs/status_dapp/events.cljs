@@ -104,6 +104,12 @@
   (fn [_ _]
     db/default-db))
 
+(re-frame/reg-event-fx
+ :request-web3
+ (fn [{:keys [db]} _]
+   (js/window.postMessage (clj->js {:type "ETHEREUM_PROVIDER_REQUEST"}) "*")
+   {:db (assoc db :web3 nil :view-id :no-web3)}))
+
 ;; Status web3 doesn't support sync calls
 (re-frame/reg-event-fx
   :request-web3-async-data
@@ -159,6 +165,13 @@
       {:call-set-contract-fx [web3 (:address contract) value]})))
 
 (re-frame/reg-event-fx
+ :contract-send-eth
+ (fn [{{:keys [web3 contract]} :db} _]
+   (when (and web3 contract)
+     {:dispatch [:send-transaction {:to       (:address contract)
+                                    :value    (.toWei web3 "0.00001" "ether")}]})))
+
+(re-frame/reg-event-fx
   :contract-call-get
   (fn [{{:keys [web3 contract]} :db} _]
     (when (and web3 contract)
@@ -207,7 +220,16 @@
 
 (re-frame/reg-event-fx
  :on-message
- (fn [{db :db} [_ data]]
+ (fn [{db :db} [_ {:keys [type permissions] :as data}]]
    (println "ON MESSAGE DATA" data)
-   (println "ON MESSAGE STATUS API" js/STATUS_API)
-   {:db (assoc-in db [:api :contact] (aget js/STATUS_API "CONTACT_CODE"))}))
+   (cond
+     (and (= type "STATUS_API_SUCCESS")) ;(= permissions "CONTACT_CODE") (some #(= "CONTACT_CODE" %) permissions))
+     {:db (assoc-in db [:api :contact] (aget js/STATUS_API "CONTACT_CODE"))})))
+
+(re-frame/reg-event-fx
+ :on-web3-success
+ (fn [{db :db} [_ provider]]
+   (println "ON WEB3 DATA" data)
+   {:db (assoc db :web3 (js/Web3. provider)
+                  :view-id :web3)
+    :dispatch [:request-web3-async-data]}))

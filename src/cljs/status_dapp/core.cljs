@@ -7,9 +7,16 @@
             [status-dapp.config :as config]))
 
 (js/window.addEventListener "message"
-                            #(when (and % (.-data %) (= (.-type (.-data %)) "STATUS_API_SUCCESS"))
-                               (println "message" (.-data %))
-                               (re-frame/dispatch [:on-message (js->clj (.-data %) :keywordize-keys true)])))
+                            #(when (and % (.-data %))
+                               (let [type (.-type (.-data %))]
+                                 (println "message" (.-data %))
+                                 (when (= type "STATUS_API_SUCCESS")
+                                   (re-frame/dispatch [:on-message (js->clj (.-data %) :keywordize-keys true)])))))
+
+(js/window.addEventListener "ethereumprovider"
+                            #(do
+                               (println "ethereumprovider" (.-ethereum (.-detail %)))
+                               (re-frame/dispatch [:on-web3-success (.-ethereum (.-detail %))])))
 
 (defn dev-setup []
   (when config/debug?

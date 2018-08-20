@@ -45,7 +45,9 @@
         [ui/button "Call function 2 times in a row" #(do
                                                        (re-frame/dispatch [:contract-call-set 10])
                                                        (re-frame/dispatch [:contract-call-set 20]))]
-        [react/text "First tx sets value to 10, second to 20"]]
+        [react/text "First tx sets value to 10, second to 20"]
+
+        [ui/button "Send 0.00001 ETH to contract" #(re-frame/dispatch [:contract-send-eth])]]
 
        tx-hash
        [react/view {:style {:padding-top 10}}
@@ -74,16 +76,15 @@
          [react/view
           (case  network
             "3" [react/view
-             ;;TODO CORS
-             [ui/button "Request Ropsten ETH" #(re-frame/dispatch [:request-ropsten-eth (str (first accounts))])]
-             [ui/asset-button "STT" constants/stt-ropsten-contract]
-             [ui/asset-button "HND" constants/hnd-ropsten-contract]
-             [ui/asset-button "LXS" constants/lxs-ropsten-contract]
-             [ui/asset-button "ADI" constants/adi-ropsten-contract]
-             [ui/asset-button "WGN" constants/wgn-ropsten-contract]
-             [ui/asset-button "MDS" constants/mds-ropsten-contract]]
+                 [ui/button "Request Ropsten ETH" #(re-frame/dispatch [:request-ropsten-eth (str (first accounts))])]
+                 [ui/asset-button "STT" constants/stt-ropsten-contract]
+                 [ui/asset-button "HND" constants/hnd-ropsten-contract]
+                 [ui/asset-button "LXS" constants/lxs-ropsten-contract]
+                 [ui/asset-button "ADI" constants/adi-ropsten-contract]
+                 [ui/asset-button "WGN" constants/wgn-ropsten-contract]
+                 [ui/asset-button "MDS" constants/mds-ropsten-contract]]
             "4" [react/view
-             [ui/button "Request Rinkeby ETH" #(re-frame/dispatch [:request-rinkeby-eth (str (first accounts))])]]
+                 [ui/button "Request Rinkeby ETH" #(re-frame/dispatch [:request-rinkeby-eth (str (first accounts))])]]
             [react/text "Assets supported only in Ropsten Testnet"])])
 
        (when (= :transactions tab-view)
@@ -132,6 +133,9 @@
 
        (when (= :api tab-view)
          [react/view
+          [ui/button "Request web3 access"
+           #(re-frame/dispatch [:request-web3])]
+
           [ui/button "Request contact code (public key)"
            #(js/window.postMessage
              (clj->js {:type "STATUS_API_REQUEST" :permissions ["CONTACT_CODE" "CONTACTS"]})
