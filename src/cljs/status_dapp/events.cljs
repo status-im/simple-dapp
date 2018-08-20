@@ -229,7 +229,6 @@
 (re-frame/reg-event-fx
  :on-web3-success
  (fn [{db :db} [_ provider]]
-   (println "ON WEB3 DATA" data)
    {:db (assoc db :web3 (js/Web3. provider)
                   :view-id :web3)
     :dispatch [:request-web3-async-data]}))
