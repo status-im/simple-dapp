@@ -8,7 +8,8 @@
 (defn no-web3 []
   [react/view {:style {:flex 1 :padding 10 :align-items :center :justify-content :center}}
    [react/text {:style {:font-weight :bold}}
-    "Can't find web3 library"]])
+    "Can't find web3 library"]
+   [:a {:href "https://get.status.im/browse/status-im.github.io/dapp/"} "Open in Status"]])
 
 (defview contract-panel [accounts]
   (letsubs [message [:get :message]
