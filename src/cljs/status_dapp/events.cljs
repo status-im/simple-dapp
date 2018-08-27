@@ -159,6 +159,37 @@
       {:deploy-contract-fx [web3 address]})))
 
 (re-frame/reg-event-fx
+ :send-batch-1tx
+ (fn [{{:keys [web3]} :db} _]
+   (when web3
+     (let [batch (.createBatch web3)
+           _ (.add batch (.request
+                          (.-sendTransaction (.-eth web3))
+                          (clj->js {:to "0x2127edab5d08b1e11adf7ae4bae16c2b33fdf74a"
+                                    :value (.toWei web3 "0.00001" "ether")})
+                          #(println "resss" % %2)))
+           _ (.execute batch)]
+       nil))))
+
+(re-frame/reg-event-fx
+ :send-batch-2tx
+ (fn [{{:keys [web3]} :db} _]
+   (when web3
+     (let [batch (.createBatch web3)
+           _ (.add batch (.request
+                          (.-sendTransaction (.-eth web3))
+                          (clj->js {:to "0x2127edab5d08b1e11adf7ae4bae16c2b33fdf74a"
+                                    :value (.toWei web3 "0.00001" "ether")})
+                          #(println "resss" % %2)))
+           _ (.add batch (.request
+                          (.-sendTransaction (.-eth web3))
+                          (clj->js {:to "0x2127edab5d08b1e11adf7ae4bae16c2b33fdf74a"
+                                    :value (.toWei web3 "0.00002" "ether")})
+                          #(println "resss" % %2)))
+           _ (.execute batch)]
+       nil))))
+
+(re-frame/reg-event-fx
   :contract-call-set
   (fn [{{:keys [web3 contract]} :db} [_ value]]
     (when (and web3 contract)
@@ -219,12 +250,10 @@
     {:sign-message-fx [web3 (first (:accounts web3-async-data)) message]}))
 
 (re-frame/reg-event-fx
- :on-message
- (fn [{db :db} [_ {:keys [type permissions] :as data}]]
+ :on-status-api
+ (fn [{db :db} [_ {:keys [data permissions]}]]
    (println "ON MESSAGE DATA" data)
-   (cond
-     (and (= type "STATUS_API_SUCCESS")) ;(= permissions "CONTACT_CODE") (some #(= "CONTACT_CODE" %) permissions))
-     {:db (assoc-in db [:api :contact] (aget js/STATUS_API "CONTACT_CODE"))})))
+   {:db (assoc-in db [:api :contact] (:CONTACT_CODE data))}))
 
 (re-frame/reg-event-fx
  :on-web3-success

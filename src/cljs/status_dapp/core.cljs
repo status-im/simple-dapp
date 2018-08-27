@@ -6,17 +6,11 @@
             [status-dapp.views :as views]
             [status-dapp.config :as config]))
 
-(js/window.addEventListener "message"
-                            #(when (and % (.-data %))
-                               (let [type (.-type (.-data %))]
-                                 (println "message" (.-data %))
-                                 (when (= type "STATUS_API_SUCCESS")
-                                   (re-frame/dispatch [:on-message (js->clj (.-data %) :keywordize-keys true)])))))
+(js/window.addEventListener "statusapi"
+                            #(re-frame/dispatch [:on-status-api (js->clj (.-detail %) :keywordize-keys true)]))
 
 (js/window.addEventListener "ethereumprovider"
-                            #(do
-                               (println "ethereumprovider" (.-ethereum (.-detail %)))
-                               (re-frame/dispatch [:on-web3-success (.-ethereum (.-detail %))])))
+                            #(re-frame/dispatch [:on-web3-success (.-ethereum (.-detail %))]))
 
 (defn dev-setup []
   (when config/debug?
