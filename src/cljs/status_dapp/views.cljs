@@ -137,8 +137,6 @@
 
        (when (= :api tab-view)
          [react/view
-          [ui/button "Request web3 access"
-           #(re-frame/dispatch [:request-web3])]
 
           [ui/button "Request contact code (public key)"
            #(js/window.postMessage

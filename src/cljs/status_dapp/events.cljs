@@ -104,16 +104,11 @@
   (fn [_ _]
     db/default-db))
 
-(re-frame/reg-event-fx
- :request-web3
- (fn [{:keys [db]} _]
-   (js/window.postMessage (clj->js {:type "ETHEREUM_PROVIDER_REQUEST"}) "*")
-   {:db (assoc db :web3 nil :view-id :no-web3)}))
-
 ;; Status web3 doesn't support sync calls
 (re-frame/reg-event-fx
   :request-web3-async-data
   (fn [{{:keys [web3] :as db} :db} _]
+    (println "WEB3" web3)
     (when web3
       {:db                (update db :web3-async-data
                                   assoc
@@ -256,8 +251,7 @@
    {:db (assoc-in db [:api :contact] (:CONTACT_CODE data))}))
 
 (re-frame/reg-event-fx
- :on-web3-success
- (fn [{db :db} [_ provider]]
-   {:db (assoc db :web3 (js/Web3. provider)
-                  :view-id :web3)
-    :dispatch [:request-web3-async-data]}))
+ :set-default-account
+ (fn [{db :db} _]
+   (set! (.-defaultAccount (.-eth (:web3 db))) js/currentAccountAddress)
+   {:dispatch [:request-web3-async-data]}))

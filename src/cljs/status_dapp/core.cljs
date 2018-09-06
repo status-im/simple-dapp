@@ -9,9 +9,6 @@
 (js/window.addEventListener "statusapi"
                             #(re-frame/dispatch [:on-status-api (js->clj (.-detail %) :keywordize-keys true)]))
 
-(js/window.addEventListener "ethereumprovider"
-                            #(re-frame/dispatch [:on-web3-success (.-ethereum (.-detail %))]))
-
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)
