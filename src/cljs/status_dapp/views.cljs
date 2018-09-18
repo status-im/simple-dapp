@@ -3,7 +3,8 @@
   (:require [status-dapp.react-native-web :as react]
             [re-frame.core :as re-frame]
             [status-dapp.components :as ui]
-            [status-dapp.constants :as constants]))
+            [status-dapp.constants :as constants]
+            [reagent.core :as reagent]))
 
 (defn no-web3 []
   [react/view {:style {:flex 1 :padding 10 :align-items :center :justify-content :center}}
@@ -70,7 +71,8 @@
             status-api [:get :api]
             web3       [:get :web3]
             tab-view   [:get :tab-view]
-            balances   [:get :balances]]
+            balances   [:get :balances]
+            qr-result (reagent/atom "")]
     [react/view {:style {:flex 1}}
      [ui/tab-buttons tab-view]
      [react/scroll-view {:style {:flex 1}}
@@ -144,7 +146,18 @@
              "*")]
           [react/view {:style {:margin-bottom 10}}
            [ui/label "Contact code: " ""]
-           [react/text (:contact status-api)]]])
+           [react/text (:contact status-api)]]
+
+          [ui/button "Scan QR"
+           (fn [] (if (and web3 (.-currentProvider web3) (.-scanQRCode (.-currentProvider web3)))
+                    (.catch (.then (.scanQRCode (.-currentProvider web3))
+                                   #(reset! qr-result %))
+                            #(reset! qr-result (str "Error" %)))
+                    (reset! qr-result "No QR API found")))]
+
+          [react/view {:style {:margin-bottom 10}}
+           [ui/label "Scan QR result: " ""]
+           [react/text @qr-result]]])
 
        (when (= :about tab-view)
          [react/view
