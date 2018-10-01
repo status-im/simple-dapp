@@ -3,8 +3,11 @@
 
 (def web3 (or (when (exists? js/web3) js/web3)
               (when js/ethereum
-                (js/setTimeout (fn [] (.then (.enable js/ethereum) #(do
-                                                                      (re-frame/dispatch [:set-default-account]))) 100))
+                (js/setTimeout (fn []
+                                 (.then (.enable js/ethereum) #(re-frame/dispatch [:set-default-account]))
+                                 (when js/ethereum.status
+                                   (.then (.getContactCode js/ethereum.status) #(re-frame/dispatch [:on-status-api :contact %]))))
+                               100)
                 (js/Web3. js/ethereum))))
 
 (def default-db

@@ -246,9 +246,8 @@
 
 (re-frame/reg-event-fx
  :on-status-api
- (fn [{db :db} [_ {:keys [data permissions]}]]
-   (println "ON MESSAGE DATA" data)
-   {:db (assoc-in db [:api :contact] (:CONTACT_CODE data))}))
+ (fn [{db :db} [_ api data]]
+   {:db (assoc-in db [:api api] data)}))
 
 (re-frame/reg-event-fx
  :set-default-account
