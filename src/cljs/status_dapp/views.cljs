@@ -139,14 +139,13 @@
 
        (when (= :api tab-view)
          [react/view
-
-          [ui/button "Request contact code (public key)"
-           #(js/window.postMessage
-             (clj->js {:type "STATUS_API_REQUEST" :permissions ["CONTACT_CODE" "CONTACTS"]})
-             "*")]
-          [react/view {:style {:margin-bottom 10}}
-           [ui/label "Contact code: " ""]
-           [react/text (:contact status-api)]]
+          (when (exists? js/window.ethereum.status)
+            [react/view
+             [ui/button "Request contact code (public key)"
+              (fn [] (.then (.getContactCode js/window.ethereum.status) #(re-frame/dispatch [:on-status-api :contact %])))]
+             [react/view {:style {:margin-bottom 10}}
+              [ui/label "Contact code: " ""]
+              [react/text (:contact status-api)]]])
 
           [ui/button "Scan QR"
            (fn [] (if (and web3 (.-currentProvider web3) (.-scanQRCode (.-currentProvider web3)))

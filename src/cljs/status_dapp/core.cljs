@@ -6,9 +6,6 @@
             [status-dapp.views :as views]
             [status-dapp.config :as config]))
 
-(js/window.addEventListener "statusapi"
-                            #(re-frame/dispatch [:on-status-api (js->clj (.-detail %) :keywordize-keys true)]))
-
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)
