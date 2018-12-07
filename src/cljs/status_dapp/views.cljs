@@ -147,6 +147,14 @@
               [ui/label "Contact code: " ""]
               [react/text (:contact status-api)]]])
 
+          [ui/button "Install principles extension"
+           (fn []
+             (let [uri "https://get.status.im/extension/ipfs@QmcfsYnFvKXApcFTCNttpQvQKYxiMCqVx5MvsocFyrr2KA"]
+               (if (and web3 (.-currentProvider web3) (.-installExtension (.-currentProvider web3)))
+                 (.installExtension (.-currentProvider web3) uri)
+                 (when (exists? js/window.ethereum.status)
+                   (.installExtension js/window.ethereum.status uri)))))]
+
           [ui/button "Scan QR"
            (fn [] (if (and web3 (.-currentProvider web3) (.-scanQRCode (.-currentProvider web3)))
                     (.catch (.then (.scanQRCode (.-currentProvider web3))
