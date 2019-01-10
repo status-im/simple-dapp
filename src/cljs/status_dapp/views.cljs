@@ -137,6 +137,10 @@
           (when gas-price
             [ui/label "gasPrice" (str (.toString gas-price 10) " wei")])])
 
+       (when (= :beta tab-view)
+         [react/view
+          [ui/button "Subscribe logs"
+           (fn [] (.send js/window.ethereumBeta "eth_subscribe" (clj->js ["syncing" {}])))]])
        (when (= :api tab-view)
          [react/view
           (when (exists? js/window.ethereum.status)
