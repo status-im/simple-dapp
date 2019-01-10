@@ -27,7 +27,7 @@
     [tab-button "ETH" :eth tab-view]
     [tab-button "Version" :version tab-view]
     [tab-button "Status API" :api tab-view]
-    (when js/ethereumBeta
+    (when (exists? js/ethereumBeta)
       [tab-button "Beta Provider" :beta tab-view])
     [tab-button "About" :about tab-view]]
    [react/view {:style {:height 1 :margin-top 10 :background-color "#4360df33"}}]])

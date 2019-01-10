@@ -110,7 +110,7 @@
   (fn [{{:keys [web3] :as db} :db} _]
     (println "WEB3" web3)
     (when web3
-      {:db                (if js/window.ethereumBeta
+      {:db                (if (exists? js/window.ethereumBeta)
                             db
                             (update db :web3-async-data
                                     assoc
