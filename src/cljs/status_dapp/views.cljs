@@ -60,7 +60,8 @@
        [ui/button "Deploy simple contract" #(re-frame/dispatch [:deploy-contract (str (first accounts))])])
      [react/view {:style {:margin-top 30}}
       [ui/button "Send one Tx in batch" #(re-frame/dispatch [:send-batch-1tx])]
-      [ui/button "Send two Txs in batch, 0.00001 and 0.00002 ETH" #(re-frame/dispatch [:send-batch-2tx])]]
+      [ui/button "Send two Txs in batch, 0.00001 and 0.00002 ETH" #(re-frame/dispatch [:send-batch-2tx])]
+      [ui/button "Send two Txs, one after another, 0.00001 and 0.00002 ETH" #(re-frame/dispatch [:send-2tx])]]
      [react/view {:style {:margin-top 30}}
       [ui/button "Test filters" #(re-frame/dispatch [:check-filters])]]]))
 

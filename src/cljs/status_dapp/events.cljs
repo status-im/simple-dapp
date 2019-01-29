@@ -185,6 +185,22 @@
        nil))))
 
 (re-frame/reg-event-fx
+ :send-2tx
+ (fn [{{:keys [web3]} :db} _]
+   (when web3
+     (.sendTransaction (.-eth web3)
+      (clj->js {:to "0x2127edab5d08b1e11adf7ae4bae16c2b33fdf74a"
+                :value (.toWei web3 "0.00001" "ether")})
+      (fn [e r]
+        (when (and (not e) r)
+          (.sendTransaction
+           (.-eth web3)
+           (clj->js {:to "0x2127edab5d08b1e11adf7ae4bae16c2b33fdf74a"
+                     :value (.toWei web3 "0.00002" "ether")})
+           #(println "resss" % %2))))))))
+
+
+(re-frame/reg-event-fx
   :contract-call-set
   (fn [{{:keys [web3 contract]} :db} [_ value]]
     (when (and web3 contract)
