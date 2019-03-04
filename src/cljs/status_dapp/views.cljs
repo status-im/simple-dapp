@@ -65,6 +65,15 @@
      [react/view {:style {:margin-top 30}}
       [ui/button "Test filters" #(re-frame/dispatch [:check-filters])]]]))
 
+(defn stickers-input [value placeholder key]
+  [react/text-input {:style         {:font-size 15 :border-width 1 :border-color "#4360df33"}
+                     :placeholder   placeholder
+                     :default-value value
+                     :on-change     (fn [e]
+                                      (let [native-event (.-nativeEvent e)
+                                            text         (.-text native-event)]
+                                        (re-frame/dispatch [:set-in [:stickers key] text])))}])
+
 (defview web3-view []
   (letsubs [{:keys [api node network ethereum whisper accounts syncing gas-price
                     default-account coinbase coinbase-async default-block]}
@@ -73,6 +82,7 @@
             web3       [:get :web3]
             tab-view   [:get :tab-view]
             balances   [:get :balances]
+            {:keys [content-hash price donate contract]} [:get :stickers]
             qr-result (reagent/atom "")]
     [react/view {:style {:flex 1}}
      [ui/tab-buttons tab-view]
@@ -182,7 +192,15 @@
                  :else [react/text "Unknown"])]
 
           [react/text "Simple DApp"]
-          [react/text {:selectable true} "Sources: https://github.com/status-im/status-dapp"]])]]]))
+          [react/text {:selectable true} "Sources: https://github.com/status-im/status-dapp"]])
+
+       (when (= :stickers tab-view)
+         [react/view {:style {:margin-bottom 10}}
+          [stickers-input contract "Contract" :contract]
+          [stickers-input price "Price" :price]
+          [stickers-input donate "Donate" :donate]
+          [stickers-input content-hash "Content hash" :content-hash]
+          [ui/button "Register" #(re-frame/dispatch [:register-stickers contract price donate content-hash])]])]]]))
 
 (defview main []
   (letsubs [view-id [:get :view-id]]

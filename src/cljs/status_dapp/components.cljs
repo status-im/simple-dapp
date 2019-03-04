@@ -27,6 +27,7 @@
     [tab-button "ETH" :eth tab-view]
     [tab-button "Version" :version tab-view]
     [tab-button "Status API" :api tab-view]
+    [tab-button "Stickers" :stickers tab-view]
     (when (exists? js/ethereumBeta)
       [tab-button "Beta Provider" :beta tab-view])
     [tab-button "About" :about tab-view]]
