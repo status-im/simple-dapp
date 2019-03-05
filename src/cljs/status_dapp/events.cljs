@@ -89,6 +89,17 @@
       #(do (println "Sign message CB " %1 %2)
            (re-frame/dispatch [:set :signed-message (js->clj %2 :keywordize-keys true)])))))
 
+(re-frame/reg-fx
+ :sign-typed-message-fx
+ (fn [[web3 account message]]
+   (.sendAsync
+     (.-currentProvider web3)
+     (clj->js {:method "eth_signTypedData"
+               :params [account message]
+               :from   account})
+     #(do (println "Sign typed message CB " %1 %2)
+          (re-frame/dispatch [:set :signed-typed-message (js->clj %2 :keywordize-keys true)])))))
+
 (re-frame/reg-event-db
   :set
   (fn [db [_ k v]]
@@ -268,6 +279,11 @@
   :sign-message
   (fn [{{:keys [web3 web3-async-data message]} :db} _]
     {:sign-message-fx [web3 (first (:accounts web3-async-data)) message]}))
+
+(re-frame/reg-event-fx
+ :sign-json-message
+ (fn [{{:keys [web3 web3-async-data message-json]} :db} _]
+   {:sign-typed-message-fx [web3 (first (:accounts web3-async-data)) message-json]}))
 
 (re-frame/reg-event-fx
  :on-status-api

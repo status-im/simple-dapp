@@ -15,6 +15,7 @@
 (defview contract-panel [accounts]
   (letsubs [message [:get :message]
             {:keys [result]} [:get :signed-message]
+            typed-message [:get :signed-typed-message]
             {:keys [tx-hash address value]} [:get :contract]]
     [react/view
      [react/view {:style {:margin-bottom 10 :flex-direction :row :align-items :center}}
@@ -29,6 +30,20 @@
        [react/view {:style {:margin-bottom 10}}
         [ui/label "Signed message: " ""]
         [react/text {:style {:flex 1}} (str result)]])
+     [react/view
+      [react/text-input {:style         {:font-size 15 :border-width 1 :border-color "#4360df33" :height 60}
+                         :placeholder   "JSON"
+                         :multiline     true
+                         :on-change     (fn [e]
+                                          (let [native-event (.-nativeEvent e)
+                                                text         (.-text native-event)]
+                                            (re-frame/dispatch [:set :message-json text])))}]]
+     [ui/button "Sign Typed Message" #(re-frame/dispatch [:sign-json-message])]
+     (when (:result typed-message)
+       [react/view {:style {:margin-bottom 10}}
+        [ui/label "Signed typed message: " ""]
+        [react/text {:style {:flex 1}} (str (:result typed-message))]])
+     [react/view {:style {:height 20}}]
      (cond
 
        address
