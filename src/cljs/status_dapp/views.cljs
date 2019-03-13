@@ -218,8 +218,29 @@
           [stickers-input content-hash "Content hash" :content-hash]
           [ui/button "Register" #(re-frame/dispatch [:register-stickers contract price donate content-hash])]])]]]))
 
+(defview dapp-store-view []
+  (letsubs [{:keys [dapps]} [:get :dapp-store]]
+    [react/scroll-view
+     (for [{:keys [title data color]} dapps]
+       [react/view {:style {:margin 16}}
+        [react/view {:style {:height 40
+                             :padding-horizontal 14
+                             :justify-content :center
+                             :background-color color
+                             :box-shadow "0px 2px 8px rgba(0, 0, 0, 0.1), 0px 2px 6px rgba(136, 122, 249, 0.2)"
+                             :border-radius 8
+                             :margin-bottom 12}}
+         [react/text {:style {:font-size 15 :font-weight "500" :color :white}} title]]
+        (for [{:keys [name dapp-url description]} data]
+          [react/touchable-highlight {:on-press #(.open js/window dapp-url "_self")}
+           [react/view {:style {:height 96 :padding-top 11}}
+            [react/text {:style {:font-size 15 :line-height 22 :font-weight "500"}} name]
+            [react/text {:style {:font-size 13 :color "#939BA1" :line-height 18 :margin-top 5 :margin-bottom 2}} description]
+            [react/text {:style {:font-size 12 :color "#4360DF"}} (str dapp-url " ->")]]])])]))
+
 (defview main []
   (letsubs [view-id [:get :view-id]]
     (case view-id
       :web3 [web3-view]
+      :dapp-store [dapp-store-view]
       [no-web3])))
