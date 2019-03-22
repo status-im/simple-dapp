@@ -253,7 +253,7 @@
   :request-ropsten-eth
   (fn [_ [_ address]]
     {:http-xhrio {:method          :get
-                  :uri             (str "https://faucet.status.im/donate/" address)
+                  :uri             (str "https://faucet-ropsten.status.im/donate/" address)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [:good-request-testnet-eth]
                   :on-failure      [:bad-request-testnet-eth]}}))
