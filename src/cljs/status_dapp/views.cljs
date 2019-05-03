@@ -197,6 +197,12 @@
            [ui/label "Scan QR result: " ""]
            [react/text @qr-result]]])
 
+       (when (= :deep-links tab-view)
+         [react/view
+          [react/view {:style {:flex-direction :row :padding-vertical 10}}
+           [react/link {:href "ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7"}
+             "EIP681 deep-link"]]])
+
        (when (= :about tab-view)
          [react/view
           [react/view {:style {:flex-direction :row :padding-vertical 10}}

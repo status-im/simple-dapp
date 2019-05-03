@@ -31,3 +31,10 @@
        (vec (concat
               [text-class opts]
               ts))))))
+
+(def linking (.-Linking js/ReactNativeWeb))
+
+(defn link
+  [{:keys [href]} s]
+  [text {:accessibilityRole "link" :href href :style {:color "blue" :text-decoration-line "underline"}}
+   s])

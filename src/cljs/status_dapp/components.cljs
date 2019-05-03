@@ -30,6 +30,7 @@
     [tab-button "Stickers" :stickers tab-view]
     (when (exists? js/ethereumBeta)
       [tab-button "Beta Provider" :beta tab-view])
+    [tab-button "Deep links" :deep-links tab-view]
     [tab-button "About" :about tab-view]]
    [react/view {:style {:height 1 :margin-top 10 :background-color "#4360df33"}}]])
 
