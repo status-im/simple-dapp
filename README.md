@@ -30,3 +30,10 @@ lein build-prod
 ```
 
 Open `resources/public/index.html` in the browser.
+
+### Deploy
+
+```
+lein build-prod
+cp resources/public/js/compiled/app.js ../status-im.github.io/src/dapp/js/compiled/app.js
+```
