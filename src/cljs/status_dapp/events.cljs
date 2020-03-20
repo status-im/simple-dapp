@@ -292,6 +292,6 @@
 
 (re-frame/reg-event-fx
  :set-default-account
- (fn [{db :db} _]
-   (set! (.-defaultAccount (.-eth (:web3 db))) js/currentAccountAddress)
+ (fn [{db :db} [_ current-account-address]]
+   (set! (.-defaultAccount (.-eth (:web3 db))) current-account-address)
    {:dispatch [:request-web3-async-data]}))

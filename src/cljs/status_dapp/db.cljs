@@ -3,17 +3,12 @@
 
 (def dapp-store? (re-find #"#dapp-store" (-> js/window .-location .-href)))
 
-(def web3 (or dapp-store? (when (exists? js/web3) js/web3)
-              #_(when (exists? js/ethereumBeta)
-                  (js/setTimeout (fn []
-                                   (.then (.send js/ethereumBeta "eth_requestAccounts") #(re-frame/dispatch [:set-default-account]))
-                                   (when js/ethereumBeta
-                                     (.then (.getContactCode js/ethereumBeta.status) #(re-frame/dispatch [:on-status-api :contact %]))))
-                                 100)
-                  (js/Web3. js/ethereumBeta))
+(def web3 (or dapp-store? (when (exists? js/web3) 
+                            js/web3)
               (when (exists? js/ethereum)
                 (js/setTimeout (fn []
-                                 (.then (.enable js/ethereum) #(re-frame/dispatch [:set-default-account]))
+                                 (.then (.enable js/ethereum) 
+                                        #(re-frame/dispatch [:set-default-account (first %1)]))
                                  (when js/ethereum.status
                                    (.then (.getContactCode js/ethereum.status) #(re-frame/dispatch [:on-status-api :contact %]))))
                                100)
