@@ -1,6 +1,8 @@
 {
   "name": "status-dapp",
   "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://github.com/status-im/simple-dapp",
   "scripts": {
     "watch": "webpack -d --watch",
     "build": "webpack -p"
