@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8'>
+    <meta content="ie=edge" http-equiv="x-ua-compatible" />
+    <title>DAPP</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <style>
+      .app, html, body {
+    height:100%;
+    margin:0;
+    }
+    .app {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    </style>
+    <script src="js/web3.min.js"></script>
+  </head>
+  <body>
+    <div id="app" class="app"></div>
+    <script src="js/compiled/app.js"></script>
+    <script>
+      status_dapp.core.init();
+    </script>
+  </body>
+</html>
