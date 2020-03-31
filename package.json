@@ -1,11 +1,14 @@
 {
-  "name": "status-dapp",
+  "name": "simple-dapp",
   "version": "0.0.1",
   "license": "MIT",
   "homepage": "https://github.com/status-im/simple-dapp",
   "scripts": {
     "watch": "webpack -d --watch",
-    "build": "webpack -p"
+    "compile": "lein build-prod",
+    "build": "webpack -p",
+    "deploy": "node scripts/deploy.js",
+    "clean": "git clean -fxd public"
   },
   "dependencies": {
     "react": "^16.2.0",
@@ -13,6 +16,8 @@
     "react-native-web": "^0.3.0-rc.4"
   },
   "devDependencies": {
+    "gh-pages": "^2.2.0",
+    "promisify": "^0.0.3",
     "webpack": "^3.10.0"
   }
 }
