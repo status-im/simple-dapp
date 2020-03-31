@@ -1,12 +1,12 @@
-# status-dapp
+# Desription
 
-Simple Dapp
+Status Simple Dapp is a helper Dapp for developers and testers of Status App.
 
 ### Installation:
 
 ```
-npm install
-npm run build
+yarn install
+yarn run build
 ```
 
 ## Development Mode
@@ -26,7 +26,7 @@ Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 ### Build CLJS:
 
 ```
-lein build-prod
+yarn run compile
 ```
 
 Open `resources/public/index.html` in the browser.
@@ -34,6 +34,15 @@ Open `resources/public/index.html` in the browser.
 ### Deploy
 
 ```
-lein build-prod
-cp resources/public/js/compiled/app.js ../status-im.github.io/src/dapp/js/compiled/app.js
+yarn run deploy
 ```
+
+## Continuous Integration
+
+Status Jenkins instance builds the `master` branch with this job:
+
+https://ci.status.im/job/misc/job/simpledapp.status.im/
+
+Which deploys it to `gh-pages` branch which is published at:
+
+* https://simpledapp.status.im/
