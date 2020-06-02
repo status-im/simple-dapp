@@ -10,7 +10,7 @@
   [react/view {:style {:flex 1 :padding 10 :align-items :center :justify-content :center}}
    [react/text {:style {:font-weight :bold}}
     "Can't find web3 library"]
-   [:a {:href "https://get.status.im/browse/status-im.github.io/dapp/"} "Open in Status"]])
+   [:a {:href "https://join.status.im/b/status-im.github.io/dapp/"} "Open in Status"]])
 
 (defview contract-panel [accounts]
   (letsubs [message [:get :message]
@@ -180,7 +180,7 @@
 
           [ui/button "Install principles extension"
            (fn []
-             (let [uri "https://get.status.im/extension/ipfs@QmcfsYnFvKXApcFTCNttpQvQKYxiMCqVx5MvsocFyrr2KA"]
+             (let [uri "https://join.status.im/extension/ipfs@QmcfsYnFvKXApcFTCNttpQvQKYxiMCqVx5MvsocFyrr2KA"]
                (if (and web3 (.-currentProvider web3) (.-installExtension (.-currentProvider web3)))
                  (.installExtension (.-currentProvider web3) uri)
                  (when (exists? js/window.ethereum.status)
