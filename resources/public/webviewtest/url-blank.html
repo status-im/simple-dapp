@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>Check URL in address bar (should not be blank)</h1>
+
+
+<script>
+    setTimeout(function() {
+        window.location.hash = '%A0';
+        // Also works with the value below
+        // window.location = 'https://example.com/%A0';
+    }, 5);
+
+    var accountInfo = document.getElementById('accountInfo');
+    var requestPermissionBtn = document.getElementById('requestPermission');
+
+    requestPermissionBtn.addEventListener('click', function(e) {
+        sendAPIrequest('web3').then(function(e) {
+            accountInfo.innerText = e;
+        }).catch(function(e) {
+            alert('Error: '+e);
+        });
+    });
+</script>
+
+</body>
