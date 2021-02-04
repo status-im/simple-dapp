@@ -1,0 +1,61 @@
+<html><head></head><body>
+  
+        
+            <h1>Take Photo</h1>
+  <div id="imageblock1"> 
+    <img id="blabla1" width="150" height="150"> </div>
+        
+          <h1>Capturing Video...</h1>
+        <button onclick="play()">Click to show</button><br>
+        <video heigh="150" width="150" playsinline="" autoplay=""></video>
+        
+        <script>
+        
+        function gotMedia(mediaStream) {
+            console.log('getUserMedia() got stream:', mediaStream);
+          const mediaStreamTrack = mediaStream.getVideoTracks()[0];
+          const imageCapture = new ImageCapture(mediaStreamTrack);
+          console.log(imageCapture);
+          const img = document.querySelector('img');
+           imageCapture.takePhoto()
+          .then(blob => {
+            img.src = URL.createObjectURL(blob);
+            img.onload = () => { URL.revokeObjectURL(this.src); }
+          })
+          .catch(error => console.error('takePhoto() error:', error.name, " ", error.message));
+        
+          const gumVideo = document.querySelector('video');
+          gumVideo.srcObject = mediaStream;
+        
+        }
+        
+        
+        
+          function play(){
+            const gumVideo = document.querySelector('video');
+             gumVideo.play();
+          }
+        
+        
+        
+        window.addEventListener('load', async () => {
+          const constraints = {
+            video: {
+              width: 150, height: 150
+            }
+          };
+          console.log('Using media constraints:', constraints);
+        
+          navigator.mediaDevices.getUserMedia(constraints)
+          .then(gotMedia)
+          .catch(error => console.error('getUserMedia() error:', error.name, " ", error.message));
+        
+        });
+        
+        
+        </script>
+        
+        
+        
+        
+</body></html>
