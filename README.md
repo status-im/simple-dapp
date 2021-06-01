@@ -41,7 +41,7 @@ yarn run deploy
 
 Status Jenkins instance builds the `master` branch with this job:
 
-https://ci.status.im/job/misc/job/simpledapp.status.im/
+https://ci.status.im/job/website/job/simpledapp.status.im/
 
 Which deploys it to `gh-pages` branch which is published at:
 
