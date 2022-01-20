@@ -3,17 +3,35 @@
 
 (def dapp-store? (re-find #"#dapp-store" (-> js/window .-location .-href)))
 
-(def web3 (or dapp-store? (when (exists? js/web3) 
-                            js/web3)
-              (when (exists? js/ethereum)
-                (js/setTimeout (fn []
-                                 (.then (.enable js/ethereum) 
-                                        #(re-frame/dispatch [:set-default-account (first %1)]))
-                                 (when js/ethereum.status
-                                   (.then (.getContactCode js/ethereum.status) #(re-frame/dispatch [:on-status-api :contact %]))))
-                               100)
-                (js/Web3. js/ethereum))))
+(defn get-web3 []
+  (or dapp-store? (if (exists? js/web3)
+                    js/web3
+                    (do (re-frame/dispatch [:set-in [:foo] "w3 doesn't exist"])
+                        nil))
+      (if (exists? js/ethereum)
+        (do
+          (js/setTimeout (fn []
+                           (.then (.enable js/ethereum)
+                                  #(re-frame/dispatch [:set-default-account (first %1)]))
+                           (when js/ethereum.status
+                             (.then (.getContactCode js/ethereum.status) #(re-frame/dispatch [:on-status-api :contact %]))))
+                         100)
+          (js/Web3. js/ethereum))
+        (re-frame/dispatch [:set-in [:foo] "ethereum doesn exists"]))))
 
+(def web3 (get-web3))
+
+;; NOTE(rasom): injection of js code into Android's webview might take some time
+;; and if js/web3 or js/ethereum are not available rignt away it makes sense to
+;; retry a bit later
+(when (nil? web3)
+  (js/setTimeout
+    (fn []
+      (when-let [web3 (get-web3)]
+        (re-frame/dispatch [:set-in [:web3] web3])
+        (when-not dapp-store?
+          (re-frame/dispatch [:set-in [:view-id] :web3]))))
+    300))
 
 (def all
   [{:title "Exchanges"

@@ -4,7 +4,8 @@
                  [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                  [re-frame "0.10.2"]
                  [cljs-web3 "0.19.0-0-9"]
-                 [day8.re-frame/http-fx "0.1.5"]]
+                 [day8.re-frame/http-fx "0.1.5"]
+                 [javax.xml.bind/jaxb-api "2.3.1"]]
   :plugins [[lein-cljsbuild "1.1.7"]]
 
   :min-lein-version "2.5.3"
