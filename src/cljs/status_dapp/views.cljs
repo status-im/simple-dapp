@@ -110,6 +110,7 @@
           (case  network
             "3" [react/view
                  [ui/button "Request Ropsten ETH" #(re-frame/dispatch [:request-ropsten-eth (str (first accounts))])]
+                 [react/view {:style {:height 20}}]
                  [ui/asset-button "STT" constants/stt-ropsten-contract]
                  [ui/asset-button "HND" constants/hnd-ropsten-contract]
                  [ui/asset-button "LXS" constants/lxs-ropsten-contract]
@@ -118,6 +119,13 @@
                  [ui/asset-button "MDS" constants/mds-ropsten-contract]]
             "4" [react/view
                  [ui/button "Request Rinkeby ETH" #(re-frame/dispatch [:request-rinkeby-eth (str (first accounts))])]]
+            "5" [react/view
+                 [ui/button "Request Goerli ETH" #(re-frame/dispatch [:request-goerli-eth (str (first accounts))])]
+                 [react/view {:style {:height 20}}]
+                 [ui/asset-button "STT" constants/stt-goerli-contract]
+                 [ui/asset-button "XEENUS" constants/xeenus-goerli-contract]
+                 [ui/asset-button "YEENUS" constants/yeenus-goerli-contract]
+                 [ui/asset-button "ZEENUS" constants/zeenus-goerli-contract]]
             [react/text "Assets supported only in Ropsten Testnet"])])
 
        (when (= :transactions tab-view)

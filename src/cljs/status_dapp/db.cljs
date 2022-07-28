@@ -27,11 +27,10 @@
 (when (nil? web3)
   (js/setTimeout
     (fn []
-      (if-let [web3 (get-web3)]
-        (do (re-frame/dispatch [:set-in [:web3] web3])
-            (when-not dapp-store?
-              (re-frame/dispatch [:set-in [:view-id] :web3])))
-        (js/alert "NOOOOO")))
+      (when-let [web3 (get-web3)]
+        (re-frame/dispatch [:set-in [:web3] web3])
+        (when-not dapp-store?
+          (re-frame/dispatch [:set-in [:view-id] :web3]))))
     100))
 
 (def all

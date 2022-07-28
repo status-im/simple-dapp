@@ -268,6 +268,16 @@
                   :on-failure      [:bad-request-testnet-eth]}}))
 
 (re-frame/reg-event-fx
+  :request-goerli-eth
+  (fn [_ [_ address]]
+    (println (str "https://faucet-goerli.status.im/donate/" address))
+    {:http-xhrio {:method          :get
+                  :uri             (str "https://faucet-goerli.status.im/donate/" address)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [:good-request-testnet-eth]
+                  :on-failure      [:bad-request-testnet-eth]}}))
+
+(re-frame/reg-event-fx
  :new-contact-callback
  (fn [{db :db} [_ tx-hash address]]
    (println ":new-contact-callback tx-hash: " tx-hash " address: " address)
